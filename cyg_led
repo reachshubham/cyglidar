@@ -1,0 +1,78 @@
+import rclpy
+from sensor_msgs.msg import LaserScan
+import math
+import RPi.GPIO as GPIO
+
+class CyglidarSubscriber:
+    def __init__(self):
+        self.printed_angles = set()
+        self.ranges_within_range = []  # To store range values within the angle range
+
+    def activate_led(self):
+        # Set up the GPIO pin as an output
+        GPIO.setup(led_pin, GPIO.OUT)
+
+        # Turn on the LED
+        GPIO.output(led_pin, GPIO.HIGH)
+        print("LED activated")
+
+    def scan_callback(self, scan_data):
+        # Accessing laser scan values
+        ranges = scan_data.ranges
+        angle_min = scan_data.angle_min
+        angle_increment = scan_data.angle_increment
+
+        # Initialize variables for calculating the mean
+        mean_range = 0
+        count = 0
+
+        # Process the range values
+        for i, scan_range in enumerate(ranges):
+            angle = angle_min + i * angle_increment
+            degrees = math.degrees(angle)
+
+            if -3 <= degrees <= 3:
+                self.ranges_within_range.append(scan_range)  # Store range values within the angle range
+                count += 1
+                mean_range += scan_range
+
+                # Check if the angle has already been printed
+                if angle not in self.printed_angles:
+                    self.printed_angles.add(angle)
+                    print(f"Angle: {degrees:.2f} degrees, Range: {scan_range:.2f} meters")
+
+        # Calculate the mean of the range values within the angle range
+        if count > 0:
+            mean_range /= count
+
+            # Check if the mean exceeds 1 meter and activate the LED
+            if mean_range > 1:
+                self.activate_led()  # Activate the LED
+
+def cyglidar_subscriber():
+    try:
+        rclpy.init()
+
+        node = rclpy.create_node('cyglidar_subscriber')
+
+        # Create a CyglidarSubscriber object
+        subscriber = CyglidarSubscriber()
+
+        # Subscribe to the /scan topic
+        node.create_subscription(LaserScan, '/scan', subscriber.scan_callback, 10)
+
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        # Clean up GPIO settings
+        GPIO.cleanup()
+
+if __name__ == '__main__':
+    # Set the GPIO mode to BCM (Broadcom SOC channel)
+    GPIO.setmode(GPIO.BCM)
+
+    # Define the GPIO pin for the LED
+    led_pin = 17  # Replace with the actual GPIO pin you've used
+
+    cyglidar_subscriber()
