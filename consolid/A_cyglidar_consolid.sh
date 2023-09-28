@@ -4,11 +4,11 @@
 tmux new-session -d -s mysession
  
 # Split the terminal into three panes and run your scripts
-tmux send-keys -t mysession:0.0 '~/cyglidar_ws/src/cyglidar_d1/D1_ROS2/consolid/A_cyglidar_launch.sh' C-m
+tmux send-keys -t mysession:0.0 '~/cyglidar_ws/src/cyglidar_d1/D1_ROS2/cyglidar/consolid/A_cyglidar_launch.sh' C-m
 tmux split-window -h -t mysession:0
-tmux send-keys -t mysession:0.1 '~/cyglidar_ws/src/cyglidar_d1/D1_ROS2/consolid/AA_cyglidar_subscriber.sh' C-m
+tmux send-keys -t mysession:0.1 '~/cyglidar_ws/src/cyglidar_d1/D1_ROS2/cyglidar/consolid/AA_cyglidar_subscriber.sh' C-m
 tmux split-window -h -t mysession:0.1
-tmux send-keys -t mysession:0.2 '~/cyglidar_ws/src/cyglidar_d1/D1_ROS2/consolid/AAA_subscriber_dcv.sh' C-m
+tmux send-keys -t mysession:0.2 '~/cyglidar_ws/src/cyglidar_d1/D1_ROS2/cyglidar/consolid/AAA_subscriber_dcv.sh' C-m
 
 # Attach to the tmux session to see the scripts running
 tmux attach-session -t mysession
