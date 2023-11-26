@@ -12,6 +12,6 @@ sudo su
 ls -l/sys/class/gpio
 chmod 666/sys/class/gpio/*
 
-sudo python3 gpio_handler3.py
+sudo python3 gpio_handler4.py
 
 

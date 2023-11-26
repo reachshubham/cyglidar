@@ -2,11 +2,9 @@
 
 cd ~/cyglidar_ws
 
+colcon build
 source install/setup.bash
 source /opt/ros/foxy/setup.bash
 
-cd ~/cyglidar_ws/src/cyglidar_d1/D1_ROS2/cyglidar/consolid
-
-python3 cyg_subs9_mp.py
-
+ros2 launch cyglidar_d1_ros2 cyglidar.launch.py
 
