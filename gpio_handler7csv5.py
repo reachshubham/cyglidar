@@ -6,13 +6,13 @@ import pytz  # Import pytz for time zone handling
 
 GPIO.setmode(GPIO.BCM)
 
-LED_PIN = 22
+LED_PIN = 17
 GPIO.setup(LED_PIN, GPIO.OUT)
 
 def update_led(mean_range):
     global last_high_time
 
-    if mean_range is not None and mean_range <= 0.80:
+    if mean_range <= 0.80:
         GPIO.output(LED_PIN, GPIO.HIGH)
         print(f"Signal : ON, mean_range: {mean_range}")
         last_high_time = time.time()
@@ -38,20 +38,17 @@ if __name__ == '__main__':
                     with open("mean_range.txt", "r") as file:
                         data = file.read().strip()
                         if data:
-                            try:
-                                mean_range = float(data)
-                                update_led(mean_range)
+                            mean_range = float(data)
+                            update_led(mean_range)
 
-                                # Get current time in EST with milliseconds
-                                now = datetime.datetime.now(pytz.timezone("EST"))
-                                current_time_est = now.strftime("%Y-%m-%d %H:%M:%S.%f")
+                            # Get current time in EST with milliseconds
+                            now = datetime.datetime.now(pytz.timezone("EST"))
+                            current_time_est = now.strftime("%Y-%m-%d %H:%M:%S.%f")
 
-                                # Check interval before saving data
-                                if last_save_time is None or now - last_save_time >= datetime.timedelta(seconds=1):
-                                    last_save_time = now
-                                    csv_writer.writerow([current_time_est, mean_range])
-                            except ValueError:
-                                print("Error converting data to float")
+                            # Check interval before saving data
+                            if last_save_time is None or now - last_save_time >= datetime.timedelta(seconds=0.2):  # Adjust interval as needed
+                                last_save_time = now
+                                csv_writer.writerow([current_time_est, mean_range])
                         else:
                             # Handle empty mean_range.txt file
                             pass
@@ -64,3 +61,4 @@ if __name__ == '__main__':
     except Exception as e:
         print(f"An error occurred: {e}")
         GPIO.cleanup()
+

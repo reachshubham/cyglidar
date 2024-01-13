@@ -21,7 +21,7 @@ class CyglidarSubscriber:
             angle = angle_min + i * angle_increment
             degrees = math.degrees(angle)
 
-            if -6 <= degrees <= 6:
+            if -3 <= degrees <= 3:
                 sum_range += scan_range
                 count += 1
 

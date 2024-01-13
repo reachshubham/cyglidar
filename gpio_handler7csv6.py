@@ -2,11 +2,11 @@ import RPi.GPIO as GPIO
 import time
 import csv
 import datetime
-import pytz  # Import pytz for time zone handling
+import pytz # Import pytz for time zone handling
 
 GPIO.setmode(GPIO.BCM)
 
-LED_PIN = 22
+LED_PIN = 17
 GPIO.setup(LED_PIN, GPIO.OUT)
 
 def update_led(mean_range):
